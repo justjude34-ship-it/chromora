@@ -1,1 +1,160 @@
-<!DOCTYPE html><html lang="en-AU"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/><title>Chromora</title><meta http-equiv="refresh" content="0;url=./app.html"/></head><body><p>Loading Chromora…</p></body></html>
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<title>Chromora</title>
+<meta name="description" content="Eight colours. Two quiet choices. A reading of now."/>
+<meta name="theme-color" content="#08070d"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<link rel="manifest" href="manifest.json"/>
+<link rel="icon" href="icon.svg" type="image/svg+xml"/>
+<style>
+:root{--bg:#08070d;--ink:#f4efe6;--muted:#9a9388;--gold:#d4b46a;--card:#12101a;--line:rgba(212,180,106,.22);--safe-t:env(safe-area-inset-top,0px);--safe-b:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Georgia,ui-serif,serif}
+body{min-height:100dvh;background:radial-gradient(900px 520px at 80% -10%,rgba(196,59,140,.16),transparent 55%),radial-gradient(720px 480px at -12% 18%,rgba(13,59,102,.28),transparent 50%),#08070d}
+button{font:inherit;color:inherit;cursor:pointer}
+.app{width:min(28rem,100%);margin:0 auto;min-height:100dvh;padding:calc(.85rem + var(--safe-t)) 1.1rem calc(1.25rem + var(--safe-b))}
+.view{display:none}.view.on{display:block}
+.top{display:flex;align-items:center;justify-content:space-between;gap:.6rem;min-height:2.5rem}
+.brand{letter-spacing:.04em}.ghost,.back{background:transparent;border:1px solid var(--line);border-radius:999px;min-height:2.5rem;padding:.35rem .9rem;color:var(--muted)}
+h1,h2{font-weight:600;letter-spacing:-.02em;margin:0}h1{font-size:clamp(2.2rem,8vw,3.2rem);line-height:.95;margin:.25rem 0 .7rem}h2{font-size:1.35rem;margin:0 0 .35rem}
+.lede{color:var(--muted);line-height:1.55;margin:0 0 1.1rem;font-family:system-ui,sans-serif}.tiny{color:var(--muted);font-size:.82rem;line-height:1.5;font-family:system-ui,sans-serif}
+.btn{width:100%;min-height:3.3rem;border-radius:999px;border:0;background:var(--gold);color:#1a1408;font-weight:700;margin-top:.55rem;font-family:system-ui,sans-serif}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--ink)}
+.orbit-wrap{position:relative;height:15.5rem;margin:1rem 0 1.2rem}.orbit{position:absolute;inset:0}
+.core{position:absolute;left:50%;top:50%;width:4.2rem;height:4.2rem;margin:-2.1rem;border-radius:50%;background:radial-gradient(circle at 35% 30%,#f0d48a,#d4b46a 58%,#8a6b32)}
+.orb-slot{position:absolute;left:50%;top:50%;width:1.8rem;height:1.8rem;margin:-.9rem;transform:rotate(calc(var(--i)*45deg)) translate(6.3rem) rotate(calc(var(--i)*-45deg))}
+.orb-disc{width:100%;height:100%;border:0;border-radius:50%;padding:0}
+.round-mark{color:var(--gold);font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;font-family:system-ui,sans-serif}
+.prompt{font-size:1.35rem;line-height:1.2;margin:.35rem 0 .8rem}
+.ribbon{display:grid;grid-template-columns:repeat(8,1fr);gap:.28rem;margin:0 0 1rem}
+.swatch{aspect-ratio:1;border-radius:.5rem;border:1px solid rgba(255,255,255,.08);background:#16141e}
+.swatch.filled{border-color:transparent}.swatch.last{outline:2px solid var(--gold);outline-offset:1px}
+.palette{display:grid;grid-template-columns:1fr 1fr;gap:.65rem}
+.tile{position:relative;aspect-ratio:1.05;border:0;border-radius:1.2rem;padding:0;overflow:hidden}
+.tile.hole{visibility:hidden;pointer-events:none}
+.tile .name{position:absolute;left:.75rem;bottom:.65rem;font-family:system-ui,sans-serif;font-weight:700;font-size:.9rem;text-shadow:0 1px 2px rgba(0,0,0,.5)}
+.tile.light .name{color:#1a1408;text-shadow:none}
+.rest-disc{width:min(56vw,13rem);height:min(56vw,13rem);margin:1.4rem auto 1rem;border-radius:50%;background:#16161c}
+.count{text-align:center;color:var(--gold);font-size:2rem;margin:0}
+.spectrum{display:grid;grid-template-columns:repeat(8,1fr);gap:.28rem;margin:.4rem 0 1rem}
+.spectrum i{display:block;aspect-ratio:.55;border-radius:.2rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:1.15rem;padding:1rem;margin:0 0 .7rem;font-family:system-ui,sans-serif}
+.kicker{color:var(--gold);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;margin:0 0 .3rem}
+.dots{display:flex;gap:.35rem;margin:.35rem 0 .55rem}.dots b{width:1.1rem;height:1.1rem;border-radius:50%;display:block}
+.meter{height:.42rem;border-radius:99px;background:#1b1922;overflow:hidden;margin:.4rem 0 .55rem}
+.meter span{display:block;height:100%;background:linear-gradient(90deg,#1B7A6C,#d4b46a,#E23D28)}
+.stack{display:flex;flex-direction:column;gap:.55rem}
+.hist{display:flex;align-items:center;gap:.7rem;background:var(--card);border:1px solid var(--line);border-radius:1.1rem;padding:.75rem .85rem;text-align:left;font-family:system-ui,sans-serif}
+.hist .mini{display:grid;grid-template-columns:repeat(8,1fr);gap:2px;width:6.2rem}.hist .mini i{aspect-ratio:1;display:block;border-radius:2px}
+</style>
+</head>
+<body>
+<div class="app">
+<section id="cover" class="view on">
+<p class="brand">Chromora</p>
+<div class="orbit-wrap"><div class="orbit" id="orbit"></div><div class="core"></div></div>
+<h1>Eight colours. Two quiet choices.</h1>
+<p class="lede">A reading of now. Look at the colour itself — not a dress, a car, or a memory. Choose the one you feel most sympathy for.</p>
+<button class="btn" id="begin-btn">Begin</button>
+<button class="btn ghost" id="about-btn">About</button>
+<p class="tiny" style="margin-top:1rem">Inspired by Max Lüscher's colour-preference idea. Not the official test. Not a diagnosis. Not therapy. Nothing leaves this phone.</p>
+</section>
+<section id="how" class="view">
+<div class="top"><div class="brand">How it works</div><button class="back" data-go="cover">Back</button></div>
+<h2>Don't think it through.</h2>
+<p class="lede">You will rank eight colours twice. Between the passes, rest your eyes. First choices often carry the story you tell. Second choices often carry the weather you are actually in. Keep what fits. Leave the rest.</p>
+<button class="btn" id="how-go">I understand</button>
+</section>
+<section id="pick" class="view">
+<div class="top"><div class="brand">Chromora</div><button class="ghost" id="undo-btn">Undo</button></div>
+<p class="round-mark" id="round-mark">Round one</p>
+<p class="prompt" id="pick-prompt">Which colour do you like best, right now?</p>
+<div class="ribbon" id="ribbon"></div>
+<div class="palette" id="palette"></div>
+</section>
+<section id="rest" class="view">
+<p class="round-mark">A short pause</p>
+<h2>Look away from the colours.</h2>
+<p class="lede">Let your eyes rest on nothing in particular. Do not try to remember the first order, and do not try to avoid it.</p>
+<div class="rest-disc"></div>
+<p class="count" id="rest-count">12</p>
+<button class="btn ghost" id="skip-rest">I'm ready now</button>
+</section>
+<section id="results" class="view">
+<div class="top"><div class="brand">A reading of now</div><button class="ghost" id="hist-btn">History</button></div>
+<p class="tiny" id="when-line"></p>
+<div class="spectrum" id="spectrum"></div>
+<div id="reading"></div>
+<button class="btn" id="share-btn">Share this reading</button>
+<button class="btn ghost" id="again-btn">Another reading</button>
+<p class="tiny" style="margin-top:1rem">Not the official Lüscher Color Test. Not a diagnosis. Not therapy. Colours are felt, not proven.</p>
+</section>
+<section id="history" class="view">
+<div class="top"><div class="brand">History</div><button class="back" data-go="cover">Home</button></div>
+<p class="lede">Kept only on this phone.</p>
+<div class="stack" id="hist-list"></div>
+<button class="btn ghost" id="clear-hist">Clear history</button>
+</section>
+<section id="about" class="view">
+<div class="top"><div class="brand">About</div><button class="back" data-go="cover">Back</button></div>
+<h2>A snapshot, not a verdict.</h2>
+<p class="lede">In 1947 Max Lüscher proposed that people reveal a present inner weather by ranking colours. Chromora borrows that gesture — eight colours, two passes — and writes its own readings. Official scoring tables are not used.</p>
+<p class="tiny">Local-only. Not affiliated with Lüscher-Color-Diagnostik.</p>
+</section>
+</div>
+<script>
+const KEY="chromora-v1";
+const COLORS=[
+{id:0,hex:"#8B8680",name:"Grey",ink:"light",kind:"aux",need:"space and a pause",desire:"You want a shield — to stay uncommitted, unseen, or free of demand.",present:"You are keeping a neutral face. Distance is doing work.",held:"The shield can wait. You are willing to be touched by colour.",released:"Withdrawal feels like a loss. You do not want to disappear from your own life."},
+{id:1,hex:"#0D3B66",name:"Deep Blue",ink:"light",kind:"basic",need:"belonging, rest, tenderness",desire:"You want peace you can actually feel — a quieter room, a safer bond, permission to rest without earning it.",present:"You are moving carefully, preferring harmony over heat. Softness is the strategy.",held:"Tenderness is on the shelf. You can do without closeness for a while, or you are saving it.",released:"Rest and belonging feel unsafe, unavailable, or like a trap. Independence is the shield."},
+{id:2,hex:"#1B7A6C",name:"Sea Green",ink:"light",kind:"basic",need:"self-respect and steadiness",desire:"You want to stand your ground and be taken seriously. Dignity, mastery, a self that does not fold.",present:"You are holding form — persistent, a little proud, unwilling to be rushed or diminished.",held:"Self-assertion is muted. You are cooperating more than claiming space.",released:"Control and status feel heavy or futile. You may be tired of proving yourself."},
+{id:3,hex:"#E23D28",name:"Ember",ink:"light",kind:"basic",need:"vitality and a lived appetite",desire:"You want heat — movement, appetite, a life that answers when you push.",present:"Energy is up. You are acting, reaching, or craving something vivid.",held:"Drive is banked. Passion is waiting its turn.",released:"Intensity feels costly, dangerous, or exhausting. You are stepping off the accelerator."},
+{id:4,hex:"#F5D000",name:"Sun",ink:"dark",kind:"basic",need:"hope and a way through",desire:"You want light ahead — possibility, a door that opens, a reason to be hopeful.",present:"You are scanning for the new, a little restless, ready to lift if the sky allows it.",held:"Optimism is on hold. You are not betting on the future just yet.",released:"Brightness feels naive or unavailable. Hope is being guarded."},
+{id:5,hex:"#C43B8C",name:"Violet",ink:"light",kind:"aux",need:"enchantment and the not-ordinary",desire:"You want a touch of magic — beauty, fusion, a relationship or idea that feels enchanted.",present:"You are living a little in the ideal, sensitive to atmosphere and meaning.",held:"Enchantment is deferred. Practical life has the floor.",released:"Fantasy and fusion feel untrustworthy. You want the real, even if it is plainer."},
+{id:6,hex:"#8B4A2B",name:"Earth",ink:"light",kind:"aux",need:"body comfort and home",desire:"You want the body to be kind — warmth, ease, a home that holds you.",present:"Physical comfort and sensory safety are running the day.",held:"Bodily needs are being postponed. You can wait.",released:"Comfort feels indulgent, sticky, or out of reach. You may be running on empty and refusing to stop."},
+{id:7,hex:"#1A1A1A",name:"Black",ink:"light",kind:"aux",need:"a boundary or an ending",desire:"You want an ending, a hard line, or the power to refuse. Something must stop.",present:"You are in a decisive stance — drawing a border.",held:"Finality is not the point right now. You are leaving the door unlatched.",released:"Absolute endings feel too stark. You do not want the void; you want continuity."}
+];
+const FRAMES={desire:{title:"Desire",stem:"Right now you are turning toward…"},present:{title:"Present",stem:"This is the weather you are living in…"},held:{title:"Held",stem:"Set aside for now, not gone…"},released:{title:"Released",stem:"You are putting this down, or keeping it at a distance…"}};
+const $=id=>document.getElementById(id);
+const color=id=>COLORS.find(c=>c.id===id);
+let round=1,slots=[],picks=[],picks1=[],picks2=[],restTimer=null,lastReading=null,savedThis=false;
+function loadHist(){try{return JSON.parse(localStorage.getItem(KEY)||"[]")}catch(e){return[]}}
+function saveHist(list){localStorage.setItem(KEY,JSON.stringify(list.slice(0,12)))}
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function show(id){document.querySelectorAll(".view").forEach(v=>v.classList.toggle("on",v.id===id));window.scrollTo(0,0)}
+function paintOrbit(){const box=$("orbit");box.innerHTML="";COLORS.forEach((c,i)=>{const s=document.createElement("div");s.className="orb-slot";s.style.setProperty("--i",i);const d=document.createElement("div");d.className="orb-disc";d.style.background=c.hex;s.appendChild(d);box.appendChild(s)})}
+function renderRibbon(){const box=$("ribbon");box.innerHTML="";for(let i=0;i<8;i++){const s=document.createElement("button");const id=picks[i];s.className="swatch"+(id!=null?" filled":"")+(id!=null&&i===picks.length-1?" last":"");if(id!=null){s.style.background=color(id).hex;if(i===picks.length-1)s.onclick=undo}box.appendChild(s)}}
+function renderPalette(){const box=$("palette");box.innerHTML="";slots.forEach(id=>{const b=document.createElement("button");if(id==null||picks.includes(id)){b.className="tile hole";box.appendChild(b);return}const c=color(id);b.className="tile"+(c.ink==="dark"?" light":"");b.style.background=c.hex;b.innerHTML='<span class="name">'+c.name+"</span>";b.onclick=()=>choose(id);box.appendChild(b)})}
+function prompts(){const n=picks.length;$("round-mark").textContent=round===1?"Round one":"Round two";$("pick-prompt").textContent=n===0?"Which colour do you like best, right now?":n===7?"And the last one.":"Which of the remaining colours do you like best?"}
+function startRound(n){round=n;picks=[];slots=shuffle(COLORS.map(c=>c.id));renderRibbon();renderPalette();prompts();show("pick")}
+function choose(id){if(picks.includes(id)||picks.length>=8)return;picks.push(id);renderRibbon();renderPalette();prompts();if(picks.length===8)finishRound()}
+function undo(){if(!picks.length)return;picks.pop();renderRibbon();renderPalette();prompts()}
+function finishRound(){if(round===1){picks1=picks.slice();startRest()}else{picks2=picks.slice();lastReading=interpret(picks1,picks2);savedThis=false;renderResults(lastReading);persist(lastReading);show("results")}}
+function stopRest(){if(restTimer){clearInterval(restTimer);restTimer=null}}
+function startRest(){stopRest();let n=12;$("rest-count").textContent=String(n);show("rest");restTimer=setInterval(()=>{n-=1;$("rest-count").textContent=String(n);if(n<=0){stopRest();startRound(2)}},1000)}
+function pair(seq,a,b,key){const x=color(seq[a]),y=color(seq[b]);return{ids:[x.id,y.id],title:FRAMES[key].title,stem:FRAMES[key].stem,text:x[key]+" "+y[key]}}
+function interpret(first,second){const seq=second.slice();const notes=[];const basics=seq.slice(0,5).filter(id=>color(id).kind==="basic").length;const aux4=seq.slice(0,4).filter(id=>color(id).kind==="aux").length;if(basics===4)notes.push("The four primary needs — rest, dignity, vitality, hope — are close to the surface.");else if(basics<=1)notes.push("The compass is leaning on shields and symbols. A basic need may be asking for a more direct path.");else if(aux4>=3)notes.push("The first four colours lean auxiliary. Relief or a boundary may be standing in front of a simpler need.");seq.slice(6).forEach(id=>{const c=color(id);if(c.kind==="basic")notes.push("What is being kept at a distance is "+c.need+". That does not make it wrong.")});let moved=0;first.forEach((id,i)=>{if(Math.abs(second.indexOf(id)-i)>=2)moved+=1});if(first.join()===second.join())notes.push("Both passes agreed. Whatever this is, it is consistent today.");else if(moved>=4)notes.push("The second pass moved. First choices often carry the story you tell; second choices often carry the weather you are in.");const firstC=color(seq[0]),lastC=color(seq[7]);return{first,second:seq,desire:pair(seq,0,1,"desire"),present:pair(seq,2,3,"present"),held:pair(seq,4,5,"held"),released:pair(seq,6,7,"released"),basics,notes,stretch:"Between what you reached for first ("+firstC.name+") and what you set down last ("+lastC.name+") is the day's stretch.",invitation:"One need to name: "+firstC.need+". One thing that can wait: "+lastC.need+".",at:Date.now()}}
+function persist(r){if(savedThis)return;const list=loadHist();list.unshift({at:r.at,second:r.second,first:r.first});saveHist(list);savedThis=true}
+function renderResults(r){$("when-line").textContent=new Date(r.at).toLocaleString("en-AU",{weekday:"short",day:"numeric",month:"short",hour:"numeric",minute:"2-digit"});$("spectrum").innerHTML=r.second.map(id=>'<i style="background:'+color(id).hex+'"></i>').join("");const blocks=[r.desire,r.present,r.held,r.released];$("reading").innerHTML=blocks.map(b=>{const dots=b.ids.map(id=>'<b style="background:'+color(id).hex+'"></b>').join("");return '<article class="card"><p class="kicker">'+b.title+'</p><h2>'+color(b.ids[0]).name+' · '+color(b.ids[1]).name+'</h2><div class="dots">'+dots+'</div><p class="lede" style="margin:0">'+b.stem+' '+b.text+'</p></article>'}).join("")+'<article class="card"><p class="kicker">The stretch</p><p class="lede" style="margin:0">'+r.stretch+'</p></article><article class="card"><p class="kicker">Balance</p><div class="meter"><span style="width:'+(r.basics/4*100)+'%"></span></div><p class="lede" style="margin:0">'+(r.notes.join(" ")||"Ordinary weather. The primary needs are mixed through the row.")+'</p></article><article class="card"><p class="kicker">A small invitation</p><p class="lede" style="margin:0">'+r.invitation+'</p></article>'}
+function recap(r){return "Today you reached for "+color(r.second[0]).name+" and "+color(r.second[1]).name+".\nYou are living in "+color(r.second[2]).name+" weather.\n"+color(r.second[6]).name+" and "+color(r.second[7]).name+" can wait.\nChromora · a reading of now"}
+async function shareReading(){if(!lastReading)return;const text=recap(lastReading);try{if(navigator.share){await navigator.share({title:"Chromora",text});return}}catch(e){}try{await navigator.clipboard.writeText(text);$("share-btn").textContent="Copied";setTimeout(()=>$("share-btn").textContent="Share this reading",1600)}catch(e){$("share-btn").textContent="Could not copy"}}
+function renderHistory(){const list=loadHist();const box=$("hist-list");if(!list.length){box.innerHTML='<p class="tiny">No readings yet.</p>';return}box.innerHTML="";list.forEach(item=>{const btn=document.createElement("button");btn.className="hist";const when=new Date(item.at).toLocaleString("en-AU",{day:"numeric",month:"short",hour:"numeric",minute:"2-digit"});btn.innerHTML='<span class="mini">'+item.second.map(id=>'<i style="background:'+color(id).hex+'"></i>').join("")+"</span><span>"+when+"</span>";btn.onclick=()=>{lastReading=interpret(item.first||item.second,item.second);lastReading.at=item.at;savedThis=true;renderResults(lastReading);show("results")};box.appendChild(btn)})}
+paintOrbit();
+$("begin-btn").onclick=()=>show("how");
+$("how-go").onclick=()=>startRound(1);
+$("about-btn").onclick=()=>show("about");
+$("undo-btn").onclick=undo;
+$("skip-rest").onclick=()=>{stopRest();startRound(2)};
+$("share-btn").onclick=shareReading;
+$("again-btn").onclick=()=>startRound(1);
+$("hist-btn").onclick=()=>{renderHistory();show("history")};
+$("clear-hist").onclick=()=>{localStorage.removeItem(KEY);renderHistory()};
+document.querySelectorAll("[data-go]").forEach(btn=>btn.addEventListener("click",()=>show(btn.getAttribute("data-go"))));
+if("serviceWorker" in navigator)navigator.serviceWorker.register("./sw.js").catch(()=>{});
+</script>
+</body>
+</html>
